@@ -11,7 +11,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { AlertCircle, Upload } from 'lucide-react'
 import Papa from 'papaparse'
@@ -26,6 +26,13 @@ interface EquipmentData {
   pressure: number
   maintenance_required: string
   timestamp: string
+  part_id: string
+  part_name: string
+  unit_name: string
+  wear_cause: string
+  part_health_percentage: number
+  days_until_replacement: number
+  last_maintenance_date: string
 }
 
 interface LatestReadings {
@@ -228,9 +235,10 @@ const EquipmentDashboard: React.FC = () => {
               >
                 <AlertCircle className='h-4 w-4' />
                 <AlertDescription>
-                  Equipment {alert.equipment_id} requires maintenance!
-                  Temperature: {alert.temperature}°C, Vibration:{' '}
-                  {alert.vibration_level}
+                  {alert.part_name} on {alert.unit_name} requires maintenance!
+                  Health: {alert.part_health_percentage}% Days until
+                  replacement: {alert.days_until_replacement}
+                  Cause: {alert.wear_cause}
                 </AlertDescription>
               </Alert>
             ))}
@@ -243,7 +251,8 @@ const EquipmentDashboard: React.FC = () => {
         {Object.values(latestReadings).map((reading) => (
           <Card key={reading.equipment_id}>
             <CardHeader>
-              <CardTitle>Equipment {reading.equipment_id}</CardTitle>
+              <CardTitle>{reading.part_name}</CardTitle>
+              <CardDescription>{reading.unit_name}</CardDescription>
             </CardHeader>
             <CardContent>
               <div className='space-y-2'>
@@ -251,6 +260,9 @@ const EquipmentDashboard: React.FC = () => {
                 <p>Vibration: {reading.vibration_level?.toFixed(2)}</p>
                 <p>Pressure: {reading.pressure?.toFixed(1)} PSI</p>
                 <p>Operating Hours: {reading.operating_hours}</p>
+                <p>Health: {reading.part_health_percentage}%</p>
+                <p>Days Until Replacement: {reading.days_until_replacement}</p>
+                <p>Wear Cause: {reading.wear_cause}</p>
                 <p
                   className={
                     reading.maintenance_required === 'Yes'

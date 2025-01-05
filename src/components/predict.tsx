@@ -25,14 +25,22 @@ interface PredictiveData {
   equipment_id: string
   temperature: number
   vibration_level: number
+  operating_hours: number
+  pressure: number
+  maintenance_required: string
   timestamp: string
+  part_id: string
+  part_name: string
+  unit_name: string
+  wear_cause: string
+  part_health_percentage: number
+  days_until_replacement: number
+  last_maintenance_date: string
 }
 
 const PredictiveAnalytics: React.FC<{ data: PredictiveData[] }> = ({
   data,
 }) => {
-
-
 
   // Function to generate future timestamps
   const generateFutureTimestamps = (lastTimestamp: string, hours: number) => {
@@ -75,26 +83,20 @@ const PredictiveAnalytics: React.FC<{ data: PredictiveData[] }> = ({
   }
 
   // Calculate maintenance probability based on current trends
-  const calculateMaintenanceProbability = (equipment_id: string) => {
-    const equipmentData = data.filter((d) => d.equipment_id === equipment_id)
-    const temps = equipmentData.map((d) => d.temperature)
-    const vibs = equipmentData.map((d) => d.vibration_level)
+const calculateMaintenanceProbability = (equipment_id: string) => {
+  const equipmentData = data.filter((d) => d.equipment_id === equipment_id)
+  if (equipmentData.length === 0) return 0
 
-    const tempTrend = (temps[temps.length - 1] - temps[0]) / temps.length
-    const vibTrend = (vibs[vibs.length - 1] - vibs[0]) / vibs.length
+  const latestData = equipmentData[equipmentData.length - 1]
+  const health = latestData.part_health_percentage
+  const daysUntilReplacement = latestData.days_until_replacement
 
-    // Simple probability calculation based on trends
-    const tempProb = Math.min(
-      100,
-      Math.max(0, (tempTrend * 20 + (temps[temps.length - 1] - 75) / 25) * 100)
-    )
-    const vibProb = Math.min(
-      100,
-      Math.max(0, (vibTrend * 30 + (vibs[vibs.length - 1] - 2) / 2) * 100)
-    )
+  // Calculate probability based on health and days until replacement
+  const healthFactor = (100 - health) / 100
+  const timeFactor = Math.max(0, (365 - daysUntilReplacement) / 365)
 
-    return Math.round((tempProb + vibProb) / 2)
-  }
+  return Math.round((healthFactor * 0.6 + timeFactor * 0.4) * 100)
+}
 
   const uniqueEquipments = Array.from(new Set(data.map((d) => d.equipment_id)))
 

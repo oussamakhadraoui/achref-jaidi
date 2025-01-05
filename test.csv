@@ -1,25 +1,46 @@
-equipment_id,temperature,vibration_level,operating_hours,pressure,maintenance_required,timestamp
-EQ001,85.2,2.4,450,102,No,2024-01-01 08:00:00
-EQ001,87.5,2.8,455,101,No,2024-01-01 09:00:00
-EQ001,92.1,3.2,460,98,Yes,2024-01-01 10:00:00
-EQ001,93.4,3.5,465,97,Yes,2024-01-01 11:00:00
-EQ001,91.8,3.3,470,98,Yes,2024-01-01 12:00:00
-EQ001,88.5,3.0,475,99,No,2024-01-01 13:00:00
-EQ001,86.2,2.7,480,100,No,2024-01-01 14:00:00
-EQ001,85.8,2.5,485,101,No,2024-01-01 15:00:00
-EQ002,78.9,1.8,200,105,No,2024-01-01 08:00:00
-EQ002,79.2,1.9,205,104,No,2024-01-01 09:00:00
-EQ002,80.1,2.0,210,103,No,2024-01-01 10:00:00
-EQ002,81.5,2.2,215,102,No,2024-01-01 11:00:00
-EQ002,83.2,2.4,220,101,No,2024-01-01 12:00:00
-EQ002,85.7,2.7,225,99,Yes,2024-01-01 13:00:00
-EQ002,87.3,2.9,230,98,Yes,2024-01-01 14:00:00
-EQ002,86.8,2.8,235,98,Yes,2024-01-01 15:00:00
-EQ003,91.5,3.5,890,94,Yes,2024-01-01 08:00:00
-EQ003,92.8,3.7,895,93,Yes,2024-01-01 09:00:00
-EQ003,93.2,3.8,900,92,Yes,2024-01-01 10:00:00
-EQ003,89.5,3.2,905,95,No,2024-01-01 11:00:00
-EQ003,87.2,2.9,910,97,No,2024-01-01 12:00:00
-EQ003,86.8,2.8,915,98,No,2024-01-01 13:00:00
-EQ003,86.5,2.7,920,99,No,2024-01-01 14:00:00
-EQ003,86.3,2.7,925,99,No,2024-01-01 15:00:00
+equipment_id,temperature,vibration_level,operating_hours,pressure,maintenance_required,timestamp,part_id,part_name,unit_name,wear_cause,part_health_percentage,days_until_replacement,last_maintenance_date
+P001,85.2,2.4,450,102,No,2024-01-01 08:00:00,P001,Pompe Hydraulique,Navire A,Normal,95,320,2023-12-15
+P001,87.5,2.8,455,101,No,2024-01-01 09:00:00,P001,Pompe Hydraulique,Navire A,Surchauffe,92,319,2023-12-15
+P001,92.1,3.2,460,98,Yes,2024-01-01 10:00:00,P001,Pompe Hydraulique,Navire A,Surchauffe,85,318,2023-12-15
+P001,93.4,3.5,465,97,Yes,2024-01-01 11:00:00,P001,Pompe Hydraulique,Navire A,Surchauffe,80,317,2023-12-15
+P001,91.8,3.3,470,98,Yes,2024-01-01 12:00:00,P001,Pompe Hydraulique,Navire A,Surchauffe,78,316,2023-12-15
+P001,88.5,3.0,475,99,No,2024-01-01 13:00:00,P001,Pompe Hydraulique,Navire A,Surchauffe,76,315,2023-12-15
+P001,86.2,2.7,480,100,No,2024-01-01 14:00:00,P001,Pompe Hydraulique,Navire A,Normal,75,314,2023-12-15
+P001,85.8,2.5,485,101,No,2024-01-01 15:00:00,P001,Pompe Hydraulique,Navire A,Normal,74,313,2023-12-15
+P002,78.9,1.8,200,105,No,2024-01-01 08:00:00,P002,Roulement Moteur,Navire B,Normal,98,150,2023-12-20
+P002,79.2,1.9,205,104,No,2024-01-01 09:00:00,P002,Roulement Moteur,Navire B,Usure mécanique,96,149,2023-12-20
+P002,80.1,2.0,210,103,No,2024-01-01 10:00:00,P002,Roulement Moteur,Navire B,Usure mécanique,94,148,2023-12-20
+P002,81.5,2.2,215,102,No,2024-01-01 11:00:00,P002,Roulement Moteur,Navire B,Usure mécanique,92,147,2023-12-20
+P002,83.2,2.4,220,101,No,2024-01-01 12:00:00,P002,Roulement Moteur,Navire B,Usure mécanique,90,146,2023-12-20
+P002,85.7,2.7,225,99,Yes,2024-01-01 13:00:00,P002,Roulement Moteur,Navire B,Usure mécanique,85,145,2023-12-20
+P002,87.3,2.9,230,98,Yes,2024-01-01 14:00:00,P002,Roulement Moteur,Navire B,Usure mécanique,82,144,2023-12-20
+P002,86.8,2.8,235,98,Yes,2024-01-01 15:00:00,P002,Roulement Moteur,Navire B,Usure mécanique,80,143,2023-12-20
+P003,91.5,3.5,890,94,Yes,2024-01-01 08:00:00,P003,Valve de Pression,Navire A,Variation de pression,75,60,2023-11-30
+P003,92.8,3.7,895,93,Yes,2024-01-01 09:00:00,P003,Valve de Pression,Navire A,Variation de pression,72,59,2023-11-30
+P003,93.2,3.8,900,92,Yes,2024-01-01 10:00:00,P003,Valve de Pression,Navire A,Variation de pression,68,58,2023-11-30
+P003,89.5,3.2,905,95,No,2024-01-01 11:00:00,P003,Valve de Pression,Navire A,Normal,67,57,2023-11-30
+P003,87.2,2.9,910,97,No,2024-01-01 12:00:00,P003,Valve de Pression,Navire A,Normal,66,56,2023-11-30
+P003,86.8,2.8,915,98,No,2024-01-01 13:00:00,P003,Valve de Pression,Navire A,Normal,65,55,2023-11-30
+P003,86.5,2.7,920,99,No,2024-01-01 14:00:00,P003,Valve de Pression,Navire A,Normal,64,54,2023-11-30
+P003,86.3,2.7,925,99,No,2024-01-01 15:00:00,P003,Valve de Pression,Navire A,Normal,63,53,2023-11-30
+P004,82.5,2.1,1200,101,No,2024-01-01 08:00:00,P004,Hélice,Navire C,Normal,88,480,2024-01-01
+P004,83.1,2.2,1205,100,No,2024-01-01 09:00:00,P004,Hélice,Navire C,Corrosion,87,479,2024-01-01
+P004,83.8,2.3,1210,99,No,2024-01-01 10:00:00,P004,Hélice,Navire C,Corrosion,86,478,2024-01-01
+P004,84.5,2.4,1215,98,No,2024-01-01 11:00:00,P004,Hélice,Navire C,Corrosion,85,477,2024-01-01
+P004,85.2,2.5,1220,97,Yes,2024-01-01 12:00:00,P004,Hélice,Navire C,Corrosion,84,476,2024-01-01
+P004,85.9,2.6,1225,96,Yes,2024-01-01 13:00:00,P004,Hélice,Navire C,Corrosion,83,475,2024-01-01
+P004,86.6,2.7,1230,95,Yes,2024-01-01 14:00:00,P004,Hélice,Navire C,Corrosion,82,474,2024-01-01
+P004,87.3,2.8,1235,94,Yes,2024-01-01 15:00:00,P004,Hélice,Navire C,Corrosion,81,473,2024-01-01
+P005,88.5,2.8,150,98,Yes,2024-01-01 08:00:00,P005,Filtre à carburant,Navire B,Encrassement,65,30,2023-12-10
+P005,89.2,2.9,155,97,Yes,2024-01-01 09:00:00,P005,Filtre à carburant,Navire B,Encrassement,62,29,2023-12-10
+P005,90.1,3.0,160,96,Yes,2024-01-01 10:00:00,P005,Filtre à carburant,Navire B,Encrassement,58,28,2023-12-10
+P005,91.0,3.1,165,95,Yes,2024-01-01 11:00:00,P005,Filtre à carburant,Navire B,Encrassement,55,27,2023-12-10
+P005,91.9,3.2,170,94,Yes,2024-01-01 12:00:00,P005,Filtre à carburant,Navire B,Encrassement,52,26,2023-12-10
+P005,92.8,3.3,175,93,Yes,2024-01-01 13:00:00,P005,Filtre à carburant,Navire B,Encrassement,48,25,2023-12-10
+P005,93.7,3.4,180,92,Yes,2024-01-01 14:00:00,P005,Filtre à carburant,Navire B,Encrassement,45,24,2023-12-10
+P005,94.6,3.5,185,91,Yes,2024-01-01 15:00:00,P005,Filtre à carburant,Navire B,Encrassement,42,23,2023-12-10
+P001,86.5,2.6,490,100,No,2024-01-02 08:00:00,P001,Pompe Hydraulique,Navire A,Normal,73,312,2023-12-15
+P002,81.2,2.1,240,102,No,2024-01-02 08:00:00,P002,Roulement Moteur,Navire B,Normal,79,142,2023-12-20
+P003,88.5,3.1,930,95,No,2024-01-02 08:00:00,P003,Valve de Pression,Navire A,Normal,62,52,2023-11-30
+P004,88.0,2.9,1240,93,Yes,2024-01-02 08:00:00,P004,Hélice,Navire C,Corrosion,80,472,2024-01-01
+P005,95.5,3.6,190,90,Yes,2024-01-02 08:00:00,P005,Filtre à carburant,Navire B,Encrassement,40,22,2023-12-10
