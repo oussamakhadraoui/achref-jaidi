@@ -1,6 +1,5 @@
-import * as React from "react"
-
-import { cn } from "@/lib/utils"
+import * as React from 'react'
+import { cn } from '@/lib/utils'
 
 const Card = React.forwardRef<
   HTMLDivElement,
@@ -9,13 +8,14 @@ const Card = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "rounded-xl border bg-card text-card-foreground shadow",
+      // Professional: cool gradient, subtle border, shadow, no overlay
+      'rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 shadow-lg hover:shadow-xl transition-shadow duration-200 relative overflow-hidden',
       className
     )}
     {...props}
   />
 ))
-Card.displayName = "Card"
+Card.displayName = 'Card'
 
 const CardHeader = React.forwardRef<
   HTMLDivElement,
@@ -23,11 +23,15 @@ const CardHeader = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn("flex flex-col space-y-1.5 p-6", className)}
+    className={cn(
+      // Slightly tinted header for separation
+      'flex flex-col space-y-2 p-7 pb-3 border-b border-slate-100 bg-gradient-to-r from-white/95 via-blue-50/80 to-white/95 z-10 relative',
+      className
+    )}
     {...props}
   />
 ))
-CardHeader.displayName = "CardHeader"
+CardHeader.displayName = 'CardHeader'
 
 const CardTitle = React.forwardRef<
   HTMLDivElement,
@@ -35,11 +39,15 @@ const CardTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn("font-semibold leading-none tracking-tight", className)}
+    className={cn(
+      // Neutral, bold, readable
+      'font-bold leading-tight tracking-tight text-xl text-slate-800',
+      className
+    )}
     {...props}
   />
 ))
-CardTitle.displayName = "CardTitle"
+CardTitle.displayName = 'CardTitle'
 
 const CardDescription = React.forwardRef<
   HTMLDivElement,
@@ -47,19 +55,27 @@ const CardDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn("text-sm text-muted-foreground", className)}
+    className={cn('text-base text-slate-500 font-medium', className)}
     {...props}
   />
 ))
-CardDescription.displayName = "CardDescription"
+CardDescription.displayName = 'CardDescription'
 
 const CardContent = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
-  <div ref={ref} className={cn("p-6 pt-0", className)} {...props} />
+  <div
+    ref={ref}
+    className={cn(
+      // Remove background, border radius, and z-index to prevent overlap with charts
+      'p-7 pt-4',
+      className
+    )}
+    {...props}
+  />
 ))
-CardContent.displayName = "CardContent"
+CardContent.displayName = 'CardContent'
 
 const CardFooter = React.forwardRef<
   HTMLDivElement,
@@ -67,10 +83,14 @@ const CardFooter = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn("flex items-center p-6 pt-0", className)}
+    className={cn(
+      // Slightly tinted footer for separation
+      'flex items-center p-7 pt-0 border-t border-slate-100 bg-gradient-to-r from-white/95 via-blue-50/80 to-white/95 z-10 relative',
+      className
+    )}
     {...props}
   />
 ))
-CardFooter.displayName = "CardFooter"
+CardFooter.displayName = 'CardFooter'
 
 export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent }

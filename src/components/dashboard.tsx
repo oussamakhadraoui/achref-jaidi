@@ -11,7 +11,13 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { AlertCircle, Upload } from 'lucide-react'
 import Papa from 'papaparse'
@@ -47,6 +53,7 @@ const EquipmentDashboard: React.FC = () => {
   )
   const [isDragging, setIsDragging] = useState<boolean>(false)
   const [error, setError] = useState<string | null>(null)
+  const [loading, setLoading] = useState<boolean>(false)
 
   // Prepare data for charts by grouping by timestamp and equipment
   const prepareChartData = (data: EquipmentData[]) => {
@@ -55,12 +62,12 @@ const EquipmentDashboard: React.FC = () => {
 
     // Convert to format needed for charts
     return Object.entries(groupedByTimestamp).map(([timestamp, readings]) => {
-     const point = { timestamp }
-    
-     readings.forEach((reading) => {
-       // @ts-expect-error dfgdfg
-       point[`temp_${reading.equipment_id}`] = reading.temperature
-       // @ts-expect-error dfgdfg
+      const point = { timestamp }
+
+      readings.forEach((reading) => {
+        // @ts-expect-error dfgdfg
+        point[`temp_${reading.equipment_id}`] = reading.temperature
+        // @ts-expect-error dfgdfg
         point[`vib_${reading.equipment_id}`] = reading.vibration_level
       })
       return point
@@ -90,8 +97,10 @@ const EquipmentDashboard: React.FC = () => {
       setMaintenanceAlerts(alerts)
       setData(parsedData)
       setError(null)
+      setLoading(false) // Hide loading after processing
     } catch (err) {
       setError('Error processing data. Please check the file format.')
+      setLoading(false)
       console.error('Error processing data:', err)
     }
   }
@@ -112,10 +121,13 @@ const EquipmentDashboard: React.FC = () => {
       return
     }
 
+    setLoading(true) // Start loading
+
     const reader = new FileReader()
     reader.onload = (event) => {
       if (!event.target?.result) {
         setError('Error reading file')
+        setLoading(false)
         return
       }
 
@@ -137,15 +149,20 @@ const EquipmentDashboard: React.FC = () => {
 
       if (parseResult.errors.length > 0) {
         setError('Error parsing CSV file')
+        setLoading(false)
         console.error('Parse errors:', parseResult.errors)
         return
       }
 
-      processData(parseResult.data)
+      // Mock loading: wait 1 second before processing data
+      setTimeout(() => {
+        processData(parseResult.data)
+      }, 1000)
     }
 
     reader.onerror = () => {
       setError('Error reading file')
+      setLoading(false)
     }
 
     reader.readAsText(file)
@@ -167,29 +184,93 @@ const EquipmentDashboard: React.FC = () => {
   // Prepare chart data
   const chartData = prepareChartData(data)
 
+  if (loading) {
+    return (
+      <div className='flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 via-white to-indigo-100 p-4'>
+        <div className='flex flex-col items-center space-y-6'>
+          <svg
+            className='animate-spin h-16 w-16 text-indigo-500'
+            xmlns='http://www.w3.org/2000/svg'
+            fill='none'
+            viewBox='0 0 24 24'
+          >
+            <circle
+              className='opacity-25'
+              cx='12'
+              cy='12'
+              r='10'
+              stroke='currentColor'
+              strokeWidth='4'
+            ></circle>
+            <path
+              className='opacity-75'
+              fill='currentColor'
+              d='M4 12a8 8 0 018-8v8z'
+            ></path>
+          </svg>
+          <h2 className='text-2xl font-bold text-indigo-700'>
+            Loading your data...
+          </h2>
+          <p className='text-slate-600'>
+            Please wait while we process your CSV file.
+          </p>
+        </div>
+      </div>
+    )
+  }
+
   if (data.length === 0) {
     return (
-      <div className='flex items-center justify-center min-h-screen bg-gray-50 p-4'>
-        <div
-          className={`w-full max-w-2xl p-12 rounded-lg border-2 border-dashed transition-colors duration-200 ease-in-out
-            ${
-              isDragging
-                ? 'border-blue-500 bg-blue-50'
-                : 'border-gray-300 bg-white'
-            }
-          `}
-          onDrop={handleDrop}
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
-        >
-          <div className='flex flex-col items-center justify-center space-y-4 text-center'>
-            <Upload className='w-12 h-12 text-gray-400' />
-            <div className='space-y-2'>
-              <h3 className='text-xl font-semibold'>Drop your CSV file here</h3>
-              <p className='text-sm text-gray-500'>
-                Drop your equipment monitoring CSV file to visualize the data
+      <div className='flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 via-white to-indigo-100 p-4'>
+        <div className='w-full max-w-2xl flex flex-col items-center'>
+          {/* App Info Section */}
+          <div className='flex flex-col items-center mb-10'>
+            <div className='bg-indigo-100 rounded-full p-4 mb-4 shadow'>
+              <svg width='48' height='48' viewBox='0 0 48 48' fill='none'>
+                <rect width='48' height='48' rx='12' fill='#6366f1' />
+                <path
+                  d='M14 34V20M24 34V14M34 34V26'
+                  stroke='#fff'
+                  strokeWidth='3'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                />
+              </svg>
+            </div>
+            <h1 className='text-3xl font-extrabold text-indigo-700 mb-2'>
+              Maintenance Dashboard
+            </h1>
+            <p className='text-lg text-slate-600 text-center max-w-xl'>
+              Welcome to your smart equipment monitoring dashboard.
+              <br />
+              Upload your equipment CSV file to visualize real-time trends,
+              receive predictive maintenance alerts, and gain actionable
+              insights for proactive asset management.
+            </p>
+          </div>
+          {/* Upload Card */}
+          <div
+            className={`w-full p-12 rounded-2xl border-2 border-dashed transition-colors duration-200 ease-in-out shadow-xl bg-white/90 flex flex-col items-center
+              ${
+                isDragging
+                  ? 'border-indigo-500 bg-indigo-50/80'
+                  : 'border-slate-200'
+              }
+            `}
+            onDrop={handleDrop}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+          >
+            <Upload className='w-16 h-16 text-indigo-400 mb-2' />
+            <div className='space-y-2 text-center'>
+              <h3 className='text-2xl font-bold text-indigo-700'>
+                Drop your CSV file here
+              </h3>
+              <p className='text-base text-slate-500'>
+                Drag and drop your equipment monitoring CSV file to visualize
+                the data
               </p>
-              {error && <p className='text-sm text-red-500 mt-2'>{error}</p>}
+              {error && <p className='text-base text-red-500 mt-2'>{error}</p>}
             </div>
           </div>
         </div>
@@ -198,47 +279,66 @@ const EquipmentDashboard: React.FC = () => {
   }
 
   return (
-    <div className='p-6 space-y-6 bg-gray-50 min-h-screen'>
-      <div className='flex justify-between items-center'>
-        <h1 className='text-3xl font-bold'>Equipment Monitoring Dashboard</h1>
+    <div className='p-8 space-y-10 bg-gradient-to-br from-blue-50 via-white to-gray-100 min-h-screen'>
+      <div className='flex flex-col md:flex-row justify-between items-center gap-4'>
+        <h1 className='text-4xl font-extrabold text-primary drop-shadow-sm'>
+          Equipment Monitoring Dashboard
+        </h1>
         <div
-          className={`p-4 rounded-lg border-2 border-dashed cursor-pointer transition-colors duration-200
+          className={`p-4 rounded-xl border-2 border-dashed cursor-pointer transition-colors duration-200 shadow hover:shadow-lg
             ${
               isDragging
-                ? 'border-blue-500 bg-blue-50'
-                : 'border-gray-300 hover:border-blue-500'
+                ? 'border-blue-500 bg-blue-100/80'
+                : 'border-gray-300 hover:border-blue-500 bg-white'
             }`}
           onDrop={handleDrop}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
         >
-          <Upload className='w-6 h-6 text-gray-400' />
+          <Upload className='w-7 h-7 text-blue-400' />
         </div>
       </div>
 
       {error && (
-        <Alert variant='destructive'>
-          <AlertCircle className='h-4 w-4' />
+        <Alert variant='destructive' className='shadow-lg'>
+          <AlertCircle className='h-5 w-5' />
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
 
       {/* Alerts Section */}
       {maintenanceAlerts.length > 0 && (
-        <div className='mb-6'>
-          <h2 className='text-xl font-semibold mb-3'>Maintenance Alerts</h2>
-          <div className='space-y-2'>
+        <div className='mb-8'>
+          <h2 className='text-2xl font-bold mb-4 text-red-600'>
+            Maintenance Alerts
+          </h2>
+          <div className='space-y-3'>
             {maintenanceAlerts.map((alert, index) => (
               <Alert
                 key={`${alert.equipment_id}-${index}`}
                 variant='destructive'
+                className='shadow'
               >
-                <AlertCircle className='h-4 w-4' />
+                <AlertCircle className='h-5 w-5' />
                 <AlertDescription>
-                  {alert.part_name} on {alert.unit_name} requires maintenance!
-                  Health: {alert.part_health_percentage}% Days until
-                  replacement: {alert.days_until_replacement}
-                  Cause: {alert.wear_cause}
+                  <span className='font-semibold'>{alert.part_name}</span> on{' '}
+                  <span className='font-semibold'>{alert.unit_name}</span>{' '}
+                  requires maintenance!
+                  <span className='ml-2'>
+                    Health:{' '}
+                    <span className='font-bold'>
+                      {alert.part_health_percentage}%
+                    </span>
+                  </span>
+                  <span className='ml-2'>
+                    Days until replacement:{' '}
+                    <span className='font-bold'>
+                      {alert.days_until_replacement}
+                    </span>
+                  </span>
+                  <span className='ml-2'>
+                    Cause: <span className='font-bold'>{alert.wear_cause}</span>
+                  </span>
                 </AlertDescription>
               </Alert>
             ))}
@@ -247,27 +347,67 @@ const EquipmentDashboard: React.FC = () => {
       )}
 
       {/* Equipment Cards */}
-      <div className='grid grid-cols-1 md:grid-cols-3 gap-4 mb-6'>
+      <div className='grid grid-cols-1 md:grid-cols-3 gap-6 mb-8'>
         {Object.values(latestReadings).map((reading) => (
-          <Card key={reading.equipment_id}>
+          <Card
+            key={reading.equipment_id}
+            className='hover:scale-[1.025] transition-transform duration-200'
+          >
             <CardHeader>
               <CardTitle>{reading.part_name}</CardTitle>
               <CardDescription>{reading.unit_name}</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className='space-y-2'>
-                <p>Temperature: {reading.temperature?.toFixed(1)}°C</p>
-                <p>Vibration: {reading.vibration_level?.toFixed(2)}</p>
-                <p>Pressure: {reading.pressure?.toFixed(1)} PSI</p>
-                <p>Operating Hours: {reading.operating_hours}</p>
-                <p>Health: {reading.part_health_percentage}%</p>
-                <p>Days Until Replacement: {reading.days_until_replacement}</p>
-                <p>Wear Cause: {reading.wear_cause}</p>
+              <div className='space-y-2 text-base'>
+                <p>
+                  <span className='font-medium text-gray-700'>
+                    Temperature:
+                  </span>{' '}
+                  <span className='font-bold'>
+                    {reading.temperature?.toFixed(1)}°C
+                  </span>
+                </p>
+                <p>
+                  <span className='font-medium text-gray-700'>Vibration:</span>{' '}
+                  <span className='font-bold'>
+                    {reading.vibration_level?.toFixed(2)}
+                  </span>
+                </p>
+                <p>
+                  <span className='font-medium text-gray-700'>Pressure:</span>{' '}
+                  <span className='font-bold'>
+                    {reading.pressure?.toFixed(1)} PSI
+                  </span>
+                </p>
+                <p>
+                  <span className='font-medium text-gray-700'>
+                    Operating Hours:
+                  </span>{' '}
+                  <span className='font-bold'>{reading.operating_hours}</span>
+                </p>
+                <p>
+                  <span className='font-medium text-gray-700'>Health:</span>{' '}
+                  <span className='font-bold'>
+                    {reading.part_health_percentage}%
+                  </span>
+                </p>
+                <p>
+                  <span className='font-medium text-gray-700'>
+                    Days Until Replacement:
+                  </span>{' '}
+                  <span className='font-bold'>
+                    {reading.days_until_replacement}
+                  </span>
+                </p>
+                <p>
+                  <span className='font-medium text-gray-700'>Wear Cause:</span>{' '}
+                  <span className='font-bold'>{reading.wear_cause}</span>
+                </p>
                 <p
                   className={
                     reading.maintenance_required === 'Yes'
-                      ? 'text-red-500'
-                      : 'text-green-500'
+                      ? 'text-red-600 font-semibold'
+                      : 'text-green-600 font-semibold'
                   }
                 >
                   Status:{' '}
@@ -282,21 +422,21 @@ const EquipmentDashboard: React.FC = () => {
       </div>
 
       {/* Temperature Chart */}
-      <Card className='mb-6'>
+      <Card className='mb-8 shadow-xl'>
         <CardHeader>
           <CardTitle>Temperature Trends</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className='h-96'>
+          <div className='h-96 bg-gradient-to-br from-white via-gray-50 to-gray-100 rounded-xl p-4 shadow-inner'>
             <ResponsiveContainer width='100%' height='100%'>
               <LineChart data={chartData}>
                 <CartesianGrid strokeDasharray='3 3' />
                 <XAxis
                   dataKey='timestamp'
-                  tick={{ fontSize: 12 }}
-                  angle={-45}
+                  tick={{ fontSize: 13, fill: '#555' }}
+                  angle={-30}
                   textAnchor='end'
-                  height={70}
+                  height={60}
                 />
                 <YAxis
                   label={{
@@ -324,21 +464,21 @@ const EquipmentDashboard: React.FC = () => {
       </Card>
 
       {/* Vibration Chart */}
-      <Card className='mb-6'>
+      <Card className='mb-8 shadow-xl'>
         <CardHeader>
           <CardTitle>Vibration Levels</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className='h-96'>
+          <div className='h-96 bg-gradient-to-br from-white via-gray-50 to-gray-100 rounded-xl p-4 shadow-inner'>
             <ResponsiveContainer width='100%' height='100%'>
               <BarChart data={chartData}>
                 <CartesianGrid strokeDasharray='3 3' />
                 <XAxis
                   dataKey='timestamp'
-                  tick={{ fontSize: 12 }}
-                  angle={-45}
+                  tick={{ fontSize: 13, fill: '#555' }}
+                  angle={-30}
                   textAnchor='end'
-                  height={70}
+                  height={60}
                 />
                 <YAxis
                   label={{

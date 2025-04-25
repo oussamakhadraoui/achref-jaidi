@@ -1,24 +1,24 @@
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import {
- Card,
- CardContent,
- CardDescription,
- CardHeader,
- CardTitle,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
 } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { AlertCircle } from 'lucide-react'
 import React from 'react'
 import {
- Area,
- AreaChart,
- CartesianGrid,
- Legend,
- Line,
- ResponsiveContainer,
- Tooltip,
- XAxis,
- YAxis
+  Area,
+  AreaChart,
+  CartesianGrid,
+  Legend,
+  Line,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
 } from 'recharts'
 
 interface PredictiveData {
@@ -41,7 +41,6 @@ interface PredictiveData {
 const PredictiveAnalytics: React.FC<{ data: PredictiveData[] }> = ({
   data,
 }) => {
-
   // Function to generate future timestamps
   const generateFutureTimestamps = (lastTimestamp: string, hours: number) => {
     const timestamps = []
@@ -83,50 +82,63 @@ const PredictiveAnalytics: React.FC<{ data: PredictiveData[] }> = ({
   }
 
   // Calculate maintenance probability based on current trends
-const calculateMaintenanceProbability = (equipment_id: string) => {
-  const equipmentData = data.filter((d) => d.equipment_id === equipment_id)
-  if (equipmentData.length === 0) return 0
+  const calculateMaintenanceProbability = (equipment_id: string) => {
+    const equipmentData = data.filter((d) => d.equipment_id === equipment_id)
+    if (equipmentData.length === 0) return 0
 
-  const latestData = equipmentData[equipmentData.length - 1]
-  const health = latestData.part_health_percentage
-  const daysUntilReplacement = latestData.days_until_replacement
+    const latestData = equipmentData[equipmentData.length - 1]
+    const health = latestData.part_health_percentage
+    const daysUntilReplacement = latestData.days_until_replacement
 
-  // Calculate probability based on health and days until replacement
-  const healthFactor = (100 - health) / 100
-  const timeFactor = Math.max(0, (365 - daysUntilReplacement) / 365)
+    // Calculate probability based on health and days until replacement
+    const healthFactor = (100 - health) / 100
+    const timeFactor = Math.max(0, (365 - daysUntilReplacement) / 365)
 
-  return Math.round((healthFactor * 0.6 + timeFactor * 0.4) * 100)
-}
+    return Math.round((healthFactor * 0.6 + timeFactor * 0.4) * 100)
+  }
 
   const uniqueEquipments = Array.from(new Set(data.map((d) => d.equipment_id)))
 
   return (
-    <div className='space-y-6'>
-      <h2 className='text-2xl font-bold mb-4'>Predictive Analytics</h2>
+    <div className='space-y-8'>
+      <h2 className='text-3xl font-extrabold mb-6 text-indigo-700'>
+        Predictive Analytics
+      </h2>
 
       {/* Maintenance Probability Cards */}
-      <div className='grid grid-cols-1 md:grid-cols-3 gap-4 mb-6'>
+      <div className='grid grid-cols-1 md:grid-cols-3 gap-6 mb-8'>
         {uniqueEquipments.map((equipment_id) => {
           const probability = calculateMaintenanceProbability(equipment_id)
           return (
-            <Card key={equipment_id}>
+            <Card
+              key={equipment_id}
+              className='transition-transform duration-200 hover:scale-[1.025]'
+            >
               <CardHeader>
                 <CardTitle>Equipment {equipment_id}</CardTitle>
                 <CardDescription>Maintenance Probability</CardDescription>
               </CardHeader>
               <CardContent>
-                <Progress value={probability} className='mb-2' />
-                <p className='text-sm text-gray-500'>
-                  {probability}% chance of requiring maintenance
-                </p>
-                {probability > 70 && (
-                  <Alert variant='destructive' className='mt-2'>
-                    <AlertCircle className='h-4 w-4' />
-                    <AlertDescription>
-                      High risk of maintenance needed soon
-                    </AlertDescription>
-                  </Alert>
-                )}
+                <div className='flex flex-col gap-2'>
+                  <Progress value={probability} className='mb-2' />
+                  <p className='text-base text-slate-600 font-medium'>
+                    <span className='font-bold text-indigo-700'>
+                      {probability}%
+                    </span>{' '}
+                    chance of requiring maintenance
+                  </p>
+                  {probability > 70 && (
+                    <Alert variant='destructive' className='mt-3'>
+                      <AlertCircle className='h-5 w-5' />
+                      <AlertDescription>
+                        <span className='font-semibold text-red-700'>
+                          High risk:
+                        </span>{' '}
+                        Maintenance needed soon
+                      </AlertDescription>
+                    </Alert>
+                  )}
+                </div>
               </CardContent>
             </Card>
           )
@@ -151,24 +163,30 @@ const calculateMaintenanceProbability = (equipment_id: string) => {
         ]
 
         return (
-          <Card key={equipment_id} className='mb-6'>
+          <Card
+            key={equipment_id}
+            className='mb-8 transition-transform duration-200 hover:scale-[1.01]'
+          >
             <CardHeader>
               <CardTitle>Equipment {equipment_id} - Forecast</CardTitle>
               <CardDescription>
-                Next 6 hours prediction with confidence intervals
+                <span className='text-indigo-700 font-medium'>
+                  Next 6 hours prediction
+                </span>{' '}
+                with confidence intervals
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className='h-80'>
+              <div className='h-96 bg-gradient-to-br from-white via-blue-50 to-indigo-100 rounded-xl p-4 shadow-inner'>
                 <ResponsiveContainer width='100%' height='100%'>
                   <AreaChart data={combinedData}>
                     <CartesianGrid strokeDasharray='3 3' />
                     <XAxis
                       dataKey='timestamp'
-                      tick={{ fontSize: 12 }}
-                      angle={-45}
+                      tick={{ fontSize: 13, fill: '#334155' }}
+                      angle={-30}
                       textAnchor='end'
-                      height={70}
+                      height={60}
                     />
                     <YAxis />
                     <Tooltip />
@@ -177,7 +195,7 @@ const calculateMaintenanceProbability = (equipment_id: string) => {
                     <Line
                       type='monotone'
                       dataKey='temperature'
-                      stroke='#8884d8'
+                      stroke='#6366f1'
                       name='Historical Temperature'
                       strokeWidth={2}
                     />
@@ -185,7 +203,7 @@ const calculateMaintenanceProbability = (equipment_id: string) => {
                     <Line
                       type='monotone'
                       dataKey='temperature_predicted'
-                      stroke='#8884d8'
+                      stroke='#6366f1'
                       strokeDasharray='5 5'
                       name='Predicted Temperature'
                     />
@@ -194,16 +212,16 @@ const calculateMaintenanceProbability = (equipment_id: string) => {
                       type='monotone'
                       dataKey='upperBoundTemp'
                       stroke='none'
-                      fill='#8884d8'
-                      fillOpacity={0.1}
+                      fill='#6366f1'
+                      fillOpacity={0.08}
                       name='Upper Bound'
                     />
                     <Area
                       type='monotone'
                       dataKey='lowerBoundTemp'
                       stroke='none'
-                      fill='#8884d8'
-                      fillOpacity={0.1}
+                      fill='#6366f1'
+                      fillOpacity={0.08}
                       name='Lower Bound'
                     />
                   </AreaChart>
